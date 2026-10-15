@@ -48,5 +48,9 @@ package-lock.json
 dist/
 build/
 
+# IntelliJ IDEA #
+#################
+.idea/
+
 # Impeccable local cache
 .impeccable/hook.cache.json
