@@ -2,7 +2,15 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { add, subtract, multiply, divide } = require('../calculator');
+const {
+  add,
+  subtract,
+  multiply,
+  divide,
+  modulo,
+  power,
+  squareRoot
+} = require('../calculator');
 
 test('addition calculates the image example and handles negative and decimal values', () => {
   assert.equal(add(2, 3), 5);
@@ -39,10 +47,44 @@ test('division by positive or negative zero throws a RangeError', () => {
   });
 });
 
-test('all operations reject non-finite and non-number operands', () => {
-  const operations = [add, subtract, multiply, divide];
+test('modulo calculates the image example and handles negative values', () => {
+  assert.equal(modulo(5, 2), 1);
+  assert.equal(modulo(10, 3), 1);
+  assert.equal(modulo(-10, 3), -1);
+  assert.equal(modulo(10, -3), 1);
+});
 
-  for (const operation of operations) {
+test('modulo by positive or negative zero throws a RangeError', () => {
+  assert.throws(() => modulo(10, 0), {
+    name: 'RangeError',
+    message: 'Cannot calculate modulo with zero.'
+  });
+  assert.throws(() => modulo(10, -0), {
+    name: 'RangeError',
+    message: 'Cannot calculate modulo with zero.'
+  });
+});
+
+test('power raises the base to positive, zero, and negative exponents', () => {
+  assert.equal(power(2, 3), 8);
+  assert.equal(power(5, 0), 1);
+  assert.equal(power(2, -2), 0.25);
+});
+
+test('square root calculates the image example and rejects negative numbers', () => {
+  assert.equal(squareRoot(16), 4);
+  assert.equal(squareRoot(9), 3);
+  assert.equal(squareRoot(0), 0);
+  assert.throws(() => squareRoot(-1), {
+    name: 'RangeError',
+    message: 'Cannot calculate the square root of a negative number.'
+  });
+});
+
+test('all operations reject non-finite and non-number operands', () => {
+  const binaryOperations = [add, subtract, multiply, divide, modulo, power];
+
+  for (const operation of binaryOperations) {
     assert.throws(() => operation('2', 3), {
       name: 'TypeError',
       message: 'Operands must be finite numbers.'
@@ -52,6 +94,13 @@ test('all operations reject non-finite and non-number operands', () => {
       message: 'Operands must be finite numbers.'
     });
     assert.throws(() => operation(Number.POSITIVE_INFINITY, 2), {
+      name: 'TypeError',
+      message: 'Operands must be finite numbers.'
+    });
+  }
+
+  for (const value of ['2', Number.NaN, Number.POSITIVE_INFINITY]) {
+    assert.throws(() => squareRoot(value), {
       name: 'TypeError',
       message: 'Operands must be finite numbers.'
     });
